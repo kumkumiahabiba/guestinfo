@@ -51,7 +51,8 @@ class download extends moodleform {
         $mform = $this->_form;
         $mform->addElement('select', 'getoptions', get_string('getoption', 'local_guestinfo'), $options);
         
-        $mform->addElement('button', 'download', get_string('getguestinfo', 'local_guestinfo'));
+       // $mform->addElement('button', 'download', get_string('getguestinfo', 'local_guestinfo'));
+       $this->add_action_buttons(true,get_string('getguestinfo', 'local_guestinfo'));
 
     }
 

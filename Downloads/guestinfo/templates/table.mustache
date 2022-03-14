@@ -25,10 +25,61 @@
         }}
 
         
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="src/tableHTMLExport.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.5/jspdf.plugin.autotable.min.js"></script>
+       
+       
+        <script>  
+            function downloadCSV(csv, filename) {  
+                alert(filename);
+                var csvFile;  
+                var downloadLink;  
+                
+                csvFile = new Blob([csv], {type: 'text/csv'});  
+                downloadLink = document.createElement("a");  
+                downloadLink.download = filename;  
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+            
+                document.body.appendChild(downloadLink);  
+                downloadLink.click();  
+            }  
+            
+            function exportTableToCSV(filename) {  
+        
+            var csv = [];  
+            var rows = document.querySelectorAll("table tr");  
+            
+        
+            for(var i=0; i<rows.length; i++) {  
+                var row = [], cols = rows[i].querySelectorAll("td, th");  
+                for( var j=0; j<cols.length; j++)  
+                row.push(cols[j].innerText);  
+                csv.push(row.join(","));  
+            }   
+            downloadCSV(csv.join("\n"), filename); 
+             
+            }  
+        </script>  
+
+<script>        
+function tableToJSON(table) {
+  var obj = {};
+  var row, rows = table.rows;
+  for (var i=0, iLen=rows.length; i<iLen; i++) {
+    row = rows[i];
+    obj[row.cells[0].textContent] = row.cells[1].textContent
+  }
+  return JSON.stringify(obj);
+}
+
+console.log(tableToJSON(document.getElementById('guest'))); // {"Name:":"Carlos","Age:":"22"}"
+
+</script>
 
 
-
-        <table class="flexible table table-striped table-hover reportlog generaltable generalbox table-sm">
+        <table class="flexible table table-striped table-hover reportlog generaltable generalbox table-sm" id= "guest">
             <thead>
             <tr>
             <th scope="col" class="text-center">course Name</th>
@@ -52,35 +103,4 @@
             </tbody>
         </table>
 
-
-  <script>  
-    function downloadCSV(csv, filename) {  
-        var csvFile;  
-        var downloadLink;  
-        
-        csvFile = new Blob([csv], {type: 'text/csv'});  
-        downloadLink = document.createElement("a");  
-        downloadLink.download = filename;  
-        downloadLink.href = window.URL.createObjectURL(csvFile);  
-        downloadLink.style.display = "none";  
-    
-        document.body.appendChild(downloadLink);  
-        downloadLink.click();  
-    }  
-    
-    function exportTableToCSV(filename) {  
- 
-    var csv = [];  
-    var rows = document.querySelectorAll("table tr");  
-    
-  
-    for(var i=0; i<rows.length; i++) {  
-        var row = [], cols = rows[i].querySelectorAll("td, th");  
-        for( var j=0; j<cols.length; j++)  
-        row.push(cols[j].innerText);  
-        csv.push(row.join(","));  
-    }   
-    downloadCSV(csv.join("\n"), filename);  
-    }  
-</script>  
   

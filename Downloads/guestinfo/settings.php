@@ -24,11 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+// defined('MOODLE_INTERNAL') || die;
 
-// Just a link to course report.
-//$ADMIN->add('reports', new admin_externalpage('localguestinfo', get_string('pluginmane', 'local_guestinfo'),
-        $CFG->wwwroot . "/local/guestinfo/guestinfo.php?id=0", 'local/guestinfo:view'));
+// // Just a link to course report.
+//$ADMIN->add('reports', new admin_externalpage('localguestinfo', get_string('pluginname', 'local_guestinfo'), $CFG->wwwroot. "/local/guestinfo/guestinfo.php?"));
 
-// No report settings.
-//$settings = null;
+//$ADMIN->add('courses', new admin_externalpage('coursestatistics', get_string('coursestatistics', 'tool_coursestatistics'), "$CFG->wwwroot/$CFG->admin/tool/coursestatistics/index.php"));
+// // No report settings.
+ //$settings = null;

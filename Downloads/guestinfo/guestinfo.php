@@ -31,6 +31,8 @@ require_once($CFG->dirroot.'/local/guestinfo/classes/form/edit.php');
 require_once($CFG->dirroot.'/local/guestinfo/classes/form/download.php');
 
 
+require_once($CFG->libdir . '/adminlib.php');
+
 global $DB;
 
 $id=optional_param('id',0,PARAM_INT);
@@ -61,10 +63,8 @@ if ($mform->is_cancelled()) {
     //In this case you process validated data. $mform->get_data() returns data posted in form.
     $record = new stdClass();
     $record->fullname =$choice[$fromform->selectcourses];
-    $record->filename=  $record->fullname ."csv"; 
+    $record->filename= str_replace(" ","_", $record->fullname); 
     
- 
-
     //redirect($CFG->wwwroot . '/local/guestinfo/view.php');
 }
 
@@ -74,11 +74,12 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname','local_guestinfo'));
 $mform->display();
 echo "<div class='content'><br><br> </div>";
-$sql = "SELECT {customcert_guestinfo}.id,{course}.fullname, {customcert_guestinfo}.guestname,{customcert_guestinfo}.guestage,{customcert_guestinfo}.guestschool,{customcert_guestinfo}.guestemail FROM {course}  JOIN {customcert_guestinfo} WHERE {course}.id = {customcert_guestinfo}.course AND {course}.fullname='{$record->fullname}' ";
+$sql = "SELECT {customcert_guestinfo}.id,{course}.fullname, {customcert_guestinfo}.guestname,{customcert_guestinfo}.guestage,{customcert_guestinfo}.guestschool,{customcert_guestinfo}.guestemail FROM {course}  JOIN {customcert_guestinfo} WHERE {course}.id = {customcert_guestinfo}.course AND {course}.fullname='{$record->fullname}'";
 $guest_data=$DB->get_records_sql($sql);
 
 $temp=(object)[
      'guest_data'=>array_values($guest_data),
+     'filename'=>$record->filename,
  ];
  
  // download form 
@@ -93,8 +94,24 @@ $options=array(
 
  if($guest_data){
     echo $OUTPUT->render_from_template('local_guestinfo/table', $temp);
-     $mform->display();
-    echo "<button onclick='exportTableToCSV($record->filename)'> Export HTML table to CSV File </button>";  
+   // $mform->display();
+    //echo "<button onclick="."exportTableToCSV('$record->filename')"."> Export HTML table to CSV File </button>";  
+
+    $dataformat = optional_param('dataformat', '', PARAM_ALPHA);
+    $columns = array(
+        'coursename' => 'Course Name',
+        'guestname' =>'Guest Name',
+        'guestage' => 'Guest Age',
+        'guestschool' =>'Guest School',
+        'guestemail' => 'Guest email',
+
+    );
+    
+    $rs = $DB->get_recordset_sql($sql);
+    
+    \core\dataformat::download_data($record->filename, $dataformat, $columns, $rs);
+    $rs->close();
+    echo $OUTPUT->download_dataformat_selector(get_string('userbulkdownload', 'admin'), 'download.php');
  }
  else{
      echo $OUTPUT->heading("Nothing to show") ;
