@@ -33,6 +33,7 @@ require_once($CFG->dirroot.'/local/guestinfo/classes/form/download.php');
 
 
 
+
 $PAGE->set_url(new moodle_url('/local/guestinfo/view.php'));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_title('guest table');
@@ -56,13 +57,7 @@ $options=array(
 
  $linkname = get_string('getguestinfo', 'local_guestinfo');
  $link = new moodle_url('/local/guestinfo/view.php', array( 'downloadown' => true));
- $nform= new edit();
- $fromform = $nform->get_data();
-    //In this case you process validated data. $mform->get_data() returns data posted in form.
-    $record = new stdClass();
-    $record->fullname = $fromform->selectcourses;
-    
-var_dump($record);
+
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname','local_guestinfo'));

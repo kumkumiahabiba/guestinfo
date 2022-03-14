@@ -28,6 +28,8 @@
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->dirroot.'/local/guestinfo/classes/form/edit.php');
+require_once($CFG->dirroot.'/local/guestinfo/classes/form/download.php');
+
 
 global $DB;
 
@@ -58,14 +60,45 @@ if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {
     //In this case you process validated data. $mform->get_data() returns data posted in form.
     $record = new stdClass();
-    $record->fullname = $fromform->selectcourses;
+    $record->fullname =$choice[$fromform->selectcourses];
+    $record->filename=  $record->fullname ."csv"; 
     
+ 
 
-    redirect($CFG->wwwroot . '/local/guestinfo/view.php');
+    //redirect($CFG->wwwroot . '/local/guestinfo/view.php');
 }
 
-var_dump($selectcourses);
 
 echo $OUTPUT->header();
+
+echo $OUTPUT->heading(get_string('pluginname','local_guestinfo'));
 $mform->display();
+echo "<div class='content'><br><br> </div>";
+$sql = "SELECT {customcert_guestinfo}.id,{course}.fullname, {customcert_guestinfo}.guestname,{customcert_guestinfo}.guestage,{customcert_guestinfo}.guestschool,{customcert_guestinfo}.guestemail FROM {course}  JOIN {customcert_guestinfo} WHERE {course}.id = {customcert_guestinfo}.course AND {course}.fullname='{$record->fullname}' ";
+$guest_data=$DB->get_records_sql($sql);
+
+$temp=(object)[
+     'guest_data'=>array_values($guest_data),
+ ];
+ 
+ // download form 
+ $mform = new download();
+$options=array(
+    0=> 'Microsoft Excel (.xlsx)' ,
+    1=> 'HTML table' ,
+    2=> 'Javascript Object Notation (.json)',
+    3=> 'OpenDocument (.ods)',
+    4=> 'Portable Document Format (.pdf)',
+  );
+
+ if($guest_data){
+    echo $OUTPUT->render_from_template('local_guestinfo/table', $temp);
+     $mform->display();
+    echo "<button onclick='exportTableToCSV($record->filename)'> Export HTML table to CSV File </button>";  
+ }
+ else{
+     echo $OUTPUT->heading("Nothing to show") ;
+ }
+
+
 echo $OUTPUT->footer();
