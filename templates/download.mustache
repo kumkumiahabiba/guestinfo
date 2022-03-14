@@ -1,0 +1,157 @@
+   <script>  
+            function downloadCSV(csv, filename) {  
+                alert(filename);
+                var csvFile;  
+                var downloadLink;  
+                
+                csvFile = new Blob([csv], {type: 'text/csv'});  
+                downloadLink = document.createElement("a");  
+                downloadLink.download = filename;  
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+            
+                document.body.appendChild(downloadLink);  
+                downloadLink.click();  
+            }  
+            
+            function exportTableToCSV(filename) {  
+        
+            var csv = [];  
+            var rows = document.querySelectorAll("table tr");  
+            
+        
+            for(var i=0; i<rows.length; i++) {  
+                var row = [], cols = rows[i].querySelectorAll("td, th");  
+                for( var j=0; j<cols.length; j++)  
+                row.push(cols[j].innerText);  
+                csv.push(row.join(","));  
+            }   
+            downloadCSV(csv.join("\n"), filename); 
+             
+            }  
+        </script>  
+
+        <script>        
+        function tableToJSON(table) {
+        var obj = {};
+        var row, rows = table.rows;
+        for (var i=0, iLen=rows.length; i<iLen; i++) {
+            row = rows[i];
+            obj[row.cells[0].textContent] = row.cells[1].textContent
+        }
+        return JSON.stringify(obj);
+        }
+
+        console.log(tableToJSON(document.getElementById('guest'))); // {"Name:":"Carlos","Age:":"22"}"
+
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>  
+    //user-defined function to download CSV file  
+    function downloadCSV(csv, filename) {  
+        var csvFile;  
+        var downloadLink;  
+        
+        //define the file type to text/csv  
+        csvFile = new Blob([csv], {type: 'text/csv'});  
+        downloadLink = document.createElement("a");  
+        downloadLink.download = filename;  
+        downloadLink.href = window.URL.createObjectURL(csvFile);  
+        downloadLink.style.display = "none";  
+    
+        document.body.appendChild(downloadLink);  
+        downloadLink.click();  
+    }  
+    
+    //user-defined function to export the data to CSV file format  
+    function exportTableToCSV(filename) {  
+    //declare a JavaScript variable of array type  
+    var csv = [];  
+    var rows = document.querySelectorAll("table tr");  
+    
+    //merge the whole data in tabular form   
+    for(var i=0; i<rows.length; i++) {  
+        var row = [], cols = rows[i].querySelectorAll("td, th");  
+        for( var j=0; j<cols.length; j++)  
+        row.push(cols[j].innerText);  
+        csv.push(row.join(","));  
+    }   
+    //call the function to download the CSV file  
+    downloadCSV(csv.join("\n"), filename);  
+    }  
+</script>  
+  
+
+<button onclick="exportTableToCSV('person.csv')"> Export HTML table to CSV File </button>   
+ 
+
+
+ $("#guest").tableHTMLExport({
+
+  // csv, txt, json, pdf
+  type:'json',
+
+  // file name
+
+  filename:'sample.json'
+
+});
+
+$("#guest).tableHTMLExport({
+
+  // csv, txt, json, pdf
+
+  type:'json',
+
+  // file name
+  filename:'sample.json',
+
+  ignoreColumns:'.ignore',
+  ignoreRows:'.ignore'
+
+});
+
+$("#guest").tableHTMLExport({
+
+  type:'pdf',
+
+  orientation:'p'
+
+});
+
+$("#guest").tableHTMLExport({
+  // csv, txt, json, pdf
+  type:'csv',
+
+  // default file name
+  filename:'tableHTMLExport.csv'
+
+  // for csv
+  separator:',',
+  newline:'\r\n',
+  trimContent:true,
+  quoteFields:true,
+
+  // CSS selector(s)
+  ignoreColumns:'',
+  ignoreRows:'',
+
+  // your html table has html content?
+  htmlContent:false,
+
+  // debug
+  consoleLog:false,       
+
+});
